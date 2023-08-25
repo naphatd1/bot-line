@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>App Liff Line</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.js"
+      integrity="sha512-rozBdNtS7jw9BlC76YF1FQGjz17qQ0J/Vu9ZCFIW374sEy4EZRbRcUZa2RU/MZ90X2mnLU56F75VfdToGV0RiA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      charset="utf-8"
+      src="https://static.line-scdn.net/liff/edge/2/sdk.js"
+    ></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Line Liff</h1>
+      <img id="picture" width="100" alt="picture" />
+      <h3 id="user"></h3>
+    </div>
+    <div class="container">
+      <form class="row g-3" id="myForm" method="post">
+        <div class="col-md-4">
+          <input type="hidden" id="userId" name="userId" />
+          <label for="inputState" class="form-label">เลือกยี่ห้อวัคซีน</label>
+          <select id="inputState" class="form-select" name="vaccine">
+            <option selected>โปรดเลือก...</option>
+            <option>Moderna</option>
+            <option>Pfizer</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="inputEmail4" class="form-label">จำนวน</label>
+          <input
+            type="number"
+            class="form-control"
+            id="inputEmail4"
+            name="qty"
+          />
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary">จองวัคซีน</button>
+        </div>
+      </form>
+    </div>
+
+    <script
+      charset="utf-8"
+      src="https://static.line-scdn.net/liff/edge/2/sdk.js"
+    ></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', async function () {
+        await liff.init({ liffId: '2000504595-ArmOlkQq' }) // auto login
+        //get profile
+        const profile = await liff.getProfile() // profile.userId
+        document.getElementById('user').textContent =
+          'ยินดีต้อนรับ คุณ ' + profile.displayName
+        document.getElementById('picture').src = profile.pictureUrl
+        document.getElementById('userId').value = profile.userId
+      })
+
+      //submit form
+      const form = document.querySelector('form')
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        const formData = new FormData(form)
+        const bodyJSON = JSON.stringify(Object.fromEntries(formData))
+        // alert(bodyJSON);
+
+        const response = await axios.post(
+          'https://89a6-110-170-148-92.ngrok-free.app/bookvaccine',
+          bodyJSON,
+          {
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
+
+        alert(JSON.stringify(response.data))
+        await liff.sendMessages([{ type: 'text', text: response.data.message }])
+        liff.closeWindow()
+      })
+
+      async function scan() {
+        const result = await liff.scanCodeV2()
+        // ส่งข้อความกลับไปที่ห้อง chat
+        await liff.sendMessages([{ type: 'text', text: result.value }])
+        liff.closeWindow()
+      }
+    </script>
+  </body>
+</html>

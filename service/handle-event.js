@@ -9,6 +9,10 @@ exports.handleEvent = (event) => {
         case 'text':
           handleMessage(event)
           break
+        case 'image':
+          console.log('image message')
+          console.log(event.message)
+          break
         default:
           throw new Error(
             'Unknow event message',

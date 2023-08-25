@@ -35,7 +35,7 @@ exports.createRichMenu = async () => {
         action: {
           type: 'uri',
           label: 'Facebook',
-          uri: 'https://web.facebook.com/',
+          uri: 'https://liff.line.me/2000504595-ArmOlkQq',
         },
       },
       {

@@ -7,6 +7,7 @@ const { sendImageMap } = require('./send-message/send-imagemap')
 const { sendFlexCovid } = require('./send-message/send-flex-covid')
 const { sendFlexRoom } = require('./send-message/send-flex-room')
 
+
 exports.handleMessage = async (event) => {
   let msg
   switch (event.message.text.toLowerCase().trim()) {
